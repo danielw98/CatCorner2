@@ -26,7 +26,4 @@ public enum CatColor {
         return (CatColor) map.get(number);
     }
 
-    public int getValue() {
-        return number;
-    }
 }

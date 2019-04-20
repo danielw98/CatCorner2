@@ -2,11 +2,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 
@@ -24,119 +23,176 @@ public class CatCorner extends JFrame
     private JLabel infoPanel;
     private JLabel catCornerLabel;
     private JLabel instructions;
-    private JLabel backgroundPanelNS;
-    private JLabel backgroundPanelEW;
+    private JLabel backgroundPanelN;
+    private JLabel backgroundPanelS;
+    private JLabel backgroundPanelE;
+    private JLabel backgroundPanelW;
 
     private CatColors catColors;
+    private CatBoard board;
 
     private byte level;
 
-
+    //private static Container container;
 
     private boolean wildCatsOn;
     private boolean gameOver;
+
+
 
     public CatCorner()
     {
         frame = new JFrame("Cat Corner");
 
         initializeLabels();
-
         northPanel = new JPanel(new BorderLayout(3,3));
         southPanel = new JPanel(new BorderLayout(3,3));
         mainPanel  = new JPanel(new BorderLayout(3,3));
-        gameWindow = new JPanel(new GridLayout(10, 10));
+        gameWindow = new JPanel();
 
         northPanel.setBackground(Color.BLACK);
         southPanel.setBackground(Color.BLACK);
         mainPanel.setBackground(Color.BLACK);
-
+        gameWindow.setBackground(Color.BLACK);
 
         northPanel.add(gameWindow, BorderLayout.CENTER);
         northPanel.add(infoPanel, BorderLayout.EAST);
+
         southPanel.add(catCornerLabel, BorderLayout.NORTH);
         southPanel.add(instructions, BorderLayout.SOUTH);
 
 
         mainPanel.add(southPanel, BorderLayout.SOUTH);
-        mainPanel.add(northPanel, BorderLayout.CENTER);
+        mainPanel.add(northPanel, BorderLayout.NORTH);
         mainPanel.setSize(new Dimension(780, 860));
 
-        //frame.add(backgroundPanelNS, BorderLayout.NORTH);
-        //frame.add(backgroundPanelEW, BorderLayout.WEST);
-        //frame.add(backgroundPanelEW, BorderLayout.EAST);
-       // frame.add(backgroundPanelNS, BorderLayout.SOUTH);
+        /*frame.add(backgroundPanelN, BorderLayout.NORTH);
+        frame.add(backgroundPanelW, BorderLayout.WEST);
+        frame.add(backgroundPanelE, BorderLayout.EAST);
+        frame.add(backgroundPanelS, BorderLayout.SOUTH);*/
         frame.setBackground(Color.BLACK);
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setMaximumSize(new Dimension(1920,1080));
         frame.setMinimumSize(new Dimension(790, 870));
         frame.setSize(frame.getMinimumSize());
-        //frame.setResizable(false);
+        frame.setResizable(true);
         //frame
         frame.setVisible(true);
 
 
+        catColors = new CatColors();
 
         level = 1;
         wildCatsOn = false;
         gameOver = false;
 
-        playGame();
+        board = new CatBoard(level, wildCatsOn, catColors, this);
+
     }
 
     void playGame()
     {
-        while(level <= MAX_LEVEL && !gameOver) {
-            CatBoard board = new CatBoard(level, wildCatsOn, catColors); // vreau sa imi pregateasca tabla
+        playLevel();
 
-            //board.playLevel();
-
-            if(level == 5) {
+           /* if(level == 5) {
                 wildCatsOn = true;
             }
-            level++;
-            /*if(timeIsUp()) {
+            if(board.isLevelFinished())
+            {
+                System.out.println("afiseaza");
+            }
+           /* if(timeIsUp()) {
                 gameOver = true;
             }*/
-        }
         //displayFinalScreen(score, level)
     }
 
+    void setBoard(JPanel currentBoard)
+    {
+        northPanel.remove(gameWindow);
+
+        System.out.println("se apeleaza");
+        gameWindow = new JPanel();
+        gameWindow = currentBoard;
+        northPanel.add(gameWindow, BorderLayout.CENTER);
+        mainPanel.add(northPanel, BorderLayout.NORTH);
+        frame.add(mainPanel, BorderLayout.CENTER);
+        frame.setVisible(true);
+    }
+
+    void playLevel()
+    {
+        setGameWindow(level);
+        gameWindow.setSize(new Dimension(490, 490));
+        gameWindow.add(board.getCurrentBoard());
+        frame.add(mainPanel, BorderLayout.CENTER);
+
+    }
+    void nextLevel()
+    {
+        level++;
+        board = new CatBoard(level, wildCatsOn, catColors, this);
+        northPanel.remove(gameWindow);
+
+        System.out.println("se apeleaza");
+        gameWindow = new JPanel();
+        gameWindow = board.getCurrentBoard();
+        northPanel.add(gameWindow, BorderLayout.CENTER);
+        mainPanel.add(northPanel, BorderLayout.NORTH);
+        frame.add(mainPanel, BorderLayout.CENTER);
+        frame.setVisible(true);
+    }
 
     void initializeLabels() {
 
         BufferedImage image;
+        String path = "C:/Linux/proiecte_java/CatCorner/src/panels/";
         try {
-            image = ImageIO.read(new File("C:\\Linux\\proiecte_java\\CatCorner\\src\\panels\\infoPanel.png"));
+            image = ImageIO.read(new File(path + "infoPanel.png"));
             infoPanel = new JLabel(new ImageIcon(image));
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            image = ImageIO.read(new File("C:\\Linux\\proiecte_java\\CatCorner\\src\\panels\\catCornerLabel.png"));
+            image = ImageIO.read(new File(path + "catCornerLabel.png"));
             catCornerLabel = new JLabel(new ImageIcon(image));
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            image = ImageIO.read(new File("C:\\Linux\\proiecte_java\\CatCorner\\src\\panels\\instructions.png"));
+            image = ImageIO.read(new File(path + "instructions.png"));
             instructions = new JLabel(new ImageIcon(image));
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            image = ImageIO.read(new File("C:\\Linux\\proiecte_java\\CatCorner\\src\\panels\\backgroundPanelEW.png"));
-            backgroundPanelEW = new JLabel(new ImageIcon(image));
+            image = ImageIO.read(new File(path + "backgroundPanelE.png"));
+            backgroundPanelE = new JLabel(new ImageIcon(image));
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            image = ImageIO.read(new File("C:\\Linux\\proiecte_java\\CatCorner\\src\\panels\\backgroundPanelNS.png"));
-            backgroundPanelNS = new JLabel(new ImageIcon(image));
+            image = ImageIO.read(new File(path + "backgroundPanelN.png"));
+            backgroundPanelN = new JLabel(new ImageIcon(image));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            image = ImageIO.read(new File(path + "backgroundPanelW.png"));
+            backgroundPanelW = new JLabel(new ImageIcon(image));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            image = ImageIO.read(new File(path + "backgroundPanelS.png"));
+            backgroundPanelS = new JLabel(new ImageIcon(image));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
+    void setGameWindow(int size)
+    {
+        gameWindow.setLayout(new GridLayout(size, 0, 0, 0));
+    }
 }

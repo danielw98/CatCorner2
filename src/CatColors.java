@@ -1,136 +1,66 @@
+
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-// clasa care adreseaza lucrul cu imaginile. creez vectori de vectori de butoane care pot fi folosite
+// clasa care adreseaza lucrul cu imaginile. Generez imaginile pentru nivelul dorit
 
-public class CatColors
-{
-
-
-    private JButton[][] catButtons; //fata
-    private JButton[][] footprintButtons; //dos
-    private JButton[][] wCatButtons; //fata wildcards - de la 3 in sus
-    private JButton[][] wFootprintButtons; //dos wildcards
-
-    private final int MAX_SIZE = 6;
-    private final int WILDCARDS = 4;
+public class CatColors {
 
 
-    FootprintsColor footprintColors; //
-    CatColor catColors; // 5 culori posibile
-    CatSizes catSizes; // 6 dimensiuni posibile
-    Wildcards wildcards; // 4 wildcard-uri posibile
+    private String pathName;
+    private LevelsAttributes levelsAttributes;
 
-    LevelsAttributes levelAttributes;
-
-    CatColors()
-    {
+    CatColors() {
         buildCats();
     }
 
-    public void buildCats()
-    {
+    public void buildCats() {
 
-        catButtons = new JButton[MAX_SIZE + 1][]; // vreau sa pot folosi indexul 6
-        footprintButtons = new JButton[MAX_SIZE + 1][];  //vectorii de butoane contin imaginile pentru fiecare buton
-        wCatButtons = new JButton[MAX_SIZE + 1][];
-        wFootprintButtons = new JButton[MAX_SIZE + 1][];
+        levelsAttributes = new LevelsAttributes();
 
 
-        // de la mare la mic
-        for(int i = 1; i <= MAX_SIZE; i ++){
-            createCatsButtons(i);
-            createFootprintButtons(i);
+        pathName = "C:/Linux/proiecte_java/CatCorner/src/resources/";
 
-
-            if(i >= 4)
-            {
-                createCatsButtonsW(i);
-                createFootprintButtonsW(i);
-            }
-        }
     }
 
-    public void createCatsButtonsW(int i)
+    public JButton generateButtonF(int cat, int levelSize)
     {
-
-        BufferedImage image;
-        String pathName = " C:\\Linux\\proiecte_java\\CatCorner\\src\\resources\\" + i + "_";
-
-        //functia determina numele fisierelor si adauga icoanele la butoane
-        for(int j = 1; j <= catButtons[i].length; j++)
+        JButton myButton = new JButton();
+        String currentValue = pathName + (levelSize - 4) + "/";
+        Image image;
+        try
         {
-            try {
-                image = ImageIO.read(new File(pathName + CatColor.valueOf(j) + ".png"));
-                catButtons[i][j].setIcon(new ImageIcon(image));
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+            image = ImageIO.read(new File(currentValue + FootprintsColor.valueOf(cat) + ".png"));
+            myButton.setIcon(new ImageIcon(image));
         }
-
-    }
-
-    public void createFootprintButtonsW(int i)
-    {
-        BufferedImage image;
-        String pathName = " C:\\Linux\\proiecte_java\\CatCorner\\src\\resources\\" + i + "_";
-
-        //functia determina numele fisierelor si adauga icoanele la butoane
-        for(int j = 1; j <= footprintButtons[i].length; j++)
+        catch (IOException e)
         {
-            for(int k = 1; k <= WILDCARDS; k ++)
-            try {
-                image = ImageIO.read(new File(pathName + FootprintsColor.valueOf(j) + ".png"));
-                footprintButtons[i][j].setIcon(new ImageIcon(image));
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.out.println(currentValue + FootprintsColor.valueOf(cat) + ".png");
         }
+
+        return myButton;
     }
 
-    public void createFootprintButtons(int i)
-    {
-        BufferedImage image;
-        String pathName = " C:\\Linux\\proiecte_java\\CatCorner\\src\\resources\\" + i + "_";
-
-        //functia determina numele fisierelor si adauga icoanele la butoane
-        for(int j = 1; j <= footprintButtons[i].length; j++)
-        {
-            try {
-                image = ImageIO.read(new File(pathName + FootprintsColor.valueOf(j) + ".png"));
-                footprintButtons[i][j].setIcon(new ImageIcon(image));
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void createCatsButtons(int i)
+    public JButton generateButton(int cat, int levelSize)
     {
 
-        BufferedImage image;
-        String pathName = " C:\\Linux\\proiecte_java\\CatCorner\\src\\resources\\" + i + "_";
-
-        //functia determina numele fisierelor si adauga icoanele la butoane
-        for(int j = 1; j <= catButtons[i].length; j++)
+        JButton myButton = new JButton();
+        String currentValue = pathName + (levelSize - 4) + "/";
+        Image image;
+        try
         {
-            try {
-                image = ImageIO.read(new File(pathName + CatColor.valueOf(j) + ".png"));
-                catButtons[i][j].setIcon(new ImageIcon(image));
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
+            image = ImageIO.read(new File(currentValue + CatColor.valueOf(cat) + ".png"));
+            myButton.setIcon(new ImageIcon(image));
+        }
+        catch (IOException e)
+        {
+            System.out.println(currentValue + CatColor.valueOf(cat) + ".png");
         }
 
+        return myButton;
     }
-
-
 }
