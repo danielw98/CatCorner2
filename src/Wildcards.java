@@ -2,8 +2,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Wildcards {
-    HERRING( 1),
-    CLOCK( 2),
+    HERRING( 2),
+    CLOCK( 1),
     COOL_CAT( 3),
     RAINBOW_CAT(4);
 

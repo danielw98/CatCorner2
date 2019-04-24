@@ -63,4 +63,41 @@ public class CatColors {
 
         return myButton;
     }
+
+    public JButton generateButtonW(int cat, int levelSize, int wildCat)
+    {
+
+        JButton myButton = new JButton();
+        String currentValue = pathName + (levelSize - 4) + "/";
+        Image image;
+        try
+        {
+            image = ImageIO.read(new File(currentValue + CatColor.valueOf(cat) + "_" + Wildcards.valueOf(wildCat) + ".png"));
+            myButton.setIcon(new ImageIcon(image));
+        }
+        catch (IOException e)
+        {
+            System.out.println(currentValue + CatColor.valueOf(cat) + "_" + Wildcards.valueOf(wildCat) + ".png");
+        }
+
+        return myButton;
+    }
+
+    public JButton generateButtonFW(int cat, int levelSize, int wildcats)
+    {
+        JButton myButton = new JButton();
+        String currentValue = pathName + (levelSize - 4) + "/";
+        Image image;
+        try
+        {
+            image = ImageIO.read(new File(currentValue + FootprintsColor.valueOf(cat) + "_" + Wildcards.valueOf(cat) + ".png"));
+            myButton.setIcon(new ImageIcon(image));
+        }
+        catch (IOException e)
+        {
+            System.out.println(currentValue + FootprintsColor.valueOf(cat) + "_" + Wildcards.valueOf(cat) + ".png");
+        }
+
+        return myButton;
+    }
 }

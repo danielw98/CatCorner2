@@ -35,9 +35,9 @@ public class CatCorner extends JFrame
 
     //private static Container container;
 
-    private boolean wildCatsOn;
+    private byte wildCats;
     private boolean gameOver;
-
+    private int score;
 
 
     public CatCorner()
@@ -73,7 +73,7 @@ public class CatCorner extends JFrame
         frame.setBackground(Color.BLACK);
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setMaximumSize(new Dimension(1920,1080));
-        frame.setMinimumSize(new Dimension(790, 870));
+        frame.setMinimumSize(new Dimension(800, 900));
         frame.setSize(frame.getMinimumSize());
         frame.setResizable(true);
         //frame
@@ -83,10 +83,11 @@ public class CatCorner extends JFrame
         catColors = new CatColors();
 
         level = 1;
-        wildCatsOn = false;
+        wildCats = 0;
+        score = 0;
         gameOver = false;
 
-        board = new CatBoard(level, wildCatsOn, catColors, this);
+        board = new CatBoard(level, wildCats, this, score);
 
     }
 
@@ -94,13 +95,11 @@ public class CatCorner extends JFrame
     {
         playLevel();
 
-           /* if(level == 5) {
-                wildCatsOn = true;
-            }
-            if(board.isLevelFinished())
+
+            /*if(board.isLevelFinished())
             {
                 System.out.println("afiseaza");
-            }
+            }*/
            /* if(timeIsUp()) {
                 gameOver = true;
             }*/
@@ -109,11 +108,12 @@ public class CatCorner extends JFrame
 
     void setBoard(JPanel currentBoard)
     {
-        northPanel.remove(gameWindow);
 
-        System.out.println("se apeleaza");
+        northPanel.remove(gameWindow);
+        System.out.println("se apeleaza set Board");
         gameWindow = new JPanel();
         gameWindow = currentBoard;
+
         northPanel.add(gameWindow, BorderLayout.CENTER);
         mainPanel.add(northPanel, BorderLayout.NORTH);
         frame.add(mainPanel, BorderLayout.CENTER);
@@ -131,7 +131,12 @@ public class CatCorner extends JFrame
     void nextLevel()
     {
         level++;
-        board = new CatBoard(level, wildCatsOn, catColors, this);
+        if(level == 4 || level == 5 || level == 6 || level == 7)
+        {
+            wildCats++;
+        }
+
+        board = new CatBoard(level, wildCats, this, score);
         northPanel.remove(gameWindow);
 
         System.out.println("se apeleaza");

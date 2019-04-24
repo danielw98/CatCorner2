@@ -1,9 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.util.Random;
+
 
 public class CatBoard extends LevelsAttributes
 {
@@ -16,6 +16,7 @@ public class CatBoard extends LevelsAttributes
 
     private byte levelSize;
     private byte numberOfCats;
+    private byte wildCats;
 
     private int firstCatColor;
     private int secondCatColor;
@@ -26,17 +27,19 @@ public class CatBoard extends LevelsAttributes
     public boolean hasChanged;
     private boolean levelFinished;
     private boolean[] marked;
+    private int score;
 
     private CatCorner currentGame;
 
-    public CatBoard(int level, boolean wildCatOn, CatColors allCats, CatCorner currentGame)
+    public CatBoard(int level, byte wildCats, CatCorner currentGame, int score)
     {
 
         firstCatColor = 0;
         secondCatColor = 0;
 
+        this.score = score;
         this.currentGame = currentGame;
-
+        this.wildCats = wildCats;
         LevelsAttributes levelsAttributes = new LevelsAttributes();
 
         levelSize = levelsAttributes.getLevelSize(level);
@@ -97,7 +100,7 @@ public class CatBoard extends LevelsAttributes
         cat3 = Integer.parseInt(values3[1]);
         cat4 = Integer.parseInt(values4[1]);
 
-
+       
 
         if(firstCatColor == secondCatColor && secondCatColor == cat3 && cat3 == cat4)
         {
@@ -110,13 +113,30 @@ public class CatBoard extends LevelsAttributes
     {
 
         int randomCat;
+        boolean isWild;
+        Random r = new Random();
+        String actionCommand;
+
         for(int i = 1; i < myCats.length; i ++) {
 
-            //1=PURPLE  2=YELLOW    3=GREEN     4=ORANGE    5=RED
 
+            //1=PURPLE  2=YELLOW    3=GREEN     4=ORANGE    5=RED
+            isWild = r.nextInt(20) == 5;
             randomCat = (int) (Math.random() * numberOfCats + 1);
-            String actionCommand = i + "_" + randomCat + "_" + "cat";
-            myCats[i] = catColors.generateButton(randomCat, levelSize);
+            if(wildCats == 0 || !isWild)
+            {
+
+                 myCats[i] = catColors.generateButton(randomCat, levelSize);
+                 actionCommand = i + "_" + randomCat + "_" + "cat";
+            }
+            else
+            {
+
+                int wildCat = (int) (Math.random() * wildCats + 1);
+                myCats[i] = catColors.generateButtonW(randomCat, levelSize, wildCat);
+                actionCommand = i + "_" + randomCat + "_" + "wildcat" + Wildcards.valueOf(wildCat);
+            }
+
             myCats[i].setBackground(Color.BLACK);
             myCats[i].setActionCommand(actionCommand);
             myCats[i].addMouseListener(ph);
@@ -124,6 +144,7 @@ public class CatBoard extends LevelsAttributes
             currentBoard.add(myCats[i]);
         }
     }
+
     public void updateBoard(int[] randomCat)
     {
 
@@ -155,10 +176,7 @@ public class CatBoard extends LevelsAttributes
         currentBoard.setLayout(new GridLayout(0, size));
     }
 
-    public int getLevelSize()
-    {
-        return levelSize;
-    }
+
     public boolean isLevelFinished()
     {
         for (int i = 1; i < myCats.length && !levelFinished; i++)
@@ -166,6 +184,7 @@ public class CatBoard extends LevelsAttributes
             if (!marked[i])
                 return false;
         }
+
         System.out.println("**********GATA**********");
         currentGame.nextLevel();
 
@@ -175,7 +194,6 @@ public class CatBoard extends LevelsAttributes
     public void updateBoard(int X1, int X2, int Y1, int Y2)
     {
         int position;
-        int incI =1, incJ=1;
         int temp;
 
         if(X1>X2)
@@ -185,35 +203,133 @@ public class CatBoard extends LevelsAttributes
             X2 = temp;
 
         }
-
         if(Y1>Y2)
         {
             temp = Y1;
             Y1 = Y2;
             Y2 = temp;
         }
+
         System.out.println("se apeleaza");
-        System.out.println("X: " + X1 + " " + X2 + " " + incI);
-        System.out.println("Y: " + Y1 + " " + Y2 + " " + incJ);
+        System.out.println("X: " + X1 + " " + X2);
+        System.out.println("Y: " + Y1 + " " + Y2);
+        boolean isWild;
+        Random r = new Random();
         int[] randomCat = new int[levelSize * levelSize + 1];
+        String actionCommand;
+
+        int comboSize = (X2 - X1 + 1) * (Y2 - Y1 + 1) + 1; // combinatie de 4 pisici - 5p; +1p pentru fiecare pisica suplimentara
+        int catsUnflipped = 0; // punctajul initial pentru o pisica
+        int comboScore = 0;
         for(int i = X1; i <= X2; i++)
         {
             for(int j = Y1; j <= Y2; j++)
             {
-                System.out.println("inainte");
+
+                //determinarea pozitiei
                 position = CatCoordinates.getButtonIndex(i, j, levelSize);
+
+
+
+                //calcularea scorului
+                if(!marked[position])
+                {
+                    catsUnflipped += 5;
+                    comboScore += catsUnflipped;
+                }
+
+                //reinitializarea butonului
+                isWild = r.nextInt(20) == 5;
                 randomCat[position] = (int) (Math.random() * numberOfCats + 1);
-                myCats[position] = catColors.generateButtonF(randomCat[position], levelSize);
-                marked[position] = true;
-                System.out.println("just marked" + position);
+
+                if(wildCats == 0 || !isWild)
+                {
+
+                    myCats[position] = catColors.generateButtonF(randomCat[position], levelSize);
+                    actionCommand = i + "_" + randomCat[position] + "_" + FootprintsColor.valueOf(randomCat[position]);
+                    myCats[position].setActionCommand(actionCommand);
+                    marked[position] = true;
+
+                }
+                else
+                {
+
+                    int wildCat = (int) (Math.random() * wildCats + 1);
+                    myCats[position] = catColors.generateButtonFW(randomCat[position], levelSize, wildCat);
+                    actionCommand = i + "_" + randomCat[position] + "_" + "footprint" + "_" + Wildcards.valueOf(wildCat);
+                    myCats[position].setActionCommand(actionCommand);
+                    marked[position] = true;
+
+                }
             }
         }
+
+
+        // daca este combinatie valida, actualizez scorul
+        if(catsUnflipped != 0)
+        {
+            comboScore += comboSize;
+            score += comboScore;
+        }
+
+        System.out.println("Combinatia: " + comboScore + "\t Total: " + score);
         updateBoard(randomCat);
         currentGame.setBoard(currentBoard);
         isLevelFinished();
     }
 
+    void shuffle()
+    {
 
+       Random r = new Random();
+       boolean isWild;
+       int randomCat;
+       String actionCommand;
+
+
+        for(int i = 1; i < myCats.length; i++)
+        {
+
+            isWild = r.nextInt(20) == 5;
+
+            if(!isWild)
+            {
+
+                randomCat = (int) (Math.random() * numberOfCats + 1);
+
+                if(!marked[i])
+                {
+                    myCats[i] = catColors.generateButton(randomCat, levelSize);
+                    actionCommand = i + "_" + randomCat + "_" + "cat";
+                }
+                else
+                {
+                    myCats[i] = catColors.generateButtonF(randomCat, levelSize);
+                    actionCommand = i + "_" + randomCat + "_" + "footprint";
+                }
+            }
+            else
+            {
+                randomCat = (int) (Math.random() * numberOfCats + 1);
+                int wildCat = (int)(Math.random() * wildCats + 1);
+                if(!marked[i])
+                {
+                    myCats[i] = catColors.generateButtonW(randomCat, levelSize, wildCat);
+                    actionCommand = i + "_" + randomCat + "_" + "cat" + Wildcards.valueOf(wildCat);
+                }
+                else
+                {
+                    myCats[i] = catColors.generateButtonFW(randomCat, levelSize, wildCat);
+                    actionCommand = i + "_" + randomCat + "_" + "footprint" + Wildcards.valueOf(wildCat);
+                }
+            }
+
+            myCats[i].setActionCommand(actionCommand);
+            myCats[i].addMouseListener(ph);
+            myCats[i].setBorderPainted(false);
+            currentBoard.add(myCats[i]);
+        }
+    }
 
     class PleaseHandle extends MouseAdapter  // second class
     {
