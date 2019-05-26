@@ -72,7 +72,16 @@ public class CatColors {
         Image image;
         try
         {
-            image = ImageIO.read(new File(currentValue + CatColor.valueOf(cat) + "_" + Wildcards.valueOf(wildCat) + ".png"));
+            if(Wildcards.valueOf(wildCat).equals("WILDCAT_CAT"))
+            {
+                image = ImageIO.read(new File(currentValue + "_WILDCAT_CAT.png"));
+                System.out.println(currentValue + "_" + Wildcards.valueOf(wildCat) + ".png");
+            }
+            else
+            {
+                image = ImageIO.read(new File(currentValue + CatColor.valueOf(cat) + "_" + Wildcards.valueOf(wildCat) + ".png"));
+            }
+
             myButton.setIcon(new ImageIcon(image));
         }
         catch (IOException e)
@@ -90,12 +99,12 @@ public class CatColors {
         Image image;
         try
         {
-            image = ImageIO.read(new File(currentValue + FootprintsColor.valueOf(cat) + "_" + Wildcards.valueOf(cat) + ".png"));
+            image = ImageIO.read(new File(currentValue + FootprintsColor.valueOf(cat) + "_" + Wildcards.valueOf(wildcats) + ".png"));
             myButton.setIcon(new ImageIcon(image));
         }
         catch (IOException e)
         {
-            System.out.println(currentValue + FootprintsColor.valueOf(cat) + "_" + Wildcards.valueOf(cat) + ".png");
+            System.out.println(currentValue + FootprintsColor.valueOf(cat) + "_" + Wildcards.valueOf(wildcats) + ".png");
         }
 
         return myButton;

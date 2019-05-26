@@ -1,6 +1,4 @@
 
-
-
 public class LevelsAttributes
 {
 
@@ -13,7 +11,7 @@ public class LevelsAttributes
         initializeLevelCats();
     }
 
-    void initializeLevelSize() {
+    private void initializeLevelSize() {
 
         levelSize = new Byte[21];
         levelSize[0] = 0;
@@ -45,7 +43,7 @@ public class LevelsAttributes
 
     }
 
-    void initializeLevelCats() {
+    private void initializeLevelCats() {
         levelCats = new Byte[21];
         levelCats[0] = 0;
 

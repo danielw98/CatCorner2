@@ -12,17 +12,17 @@ import java.io.IOException;
 public class CatCorner extends JFrame
 {
 
-    private final int MAX_LEVEL = 20;
-    private JFrame frame;
+    private static JFrame frame;
 
     private JPanel northPanel;
     private JPanel southPanel;
     private JPanel gameWindow;
     private JPanel mainPanel;
+    private RightPanel rightPanel;
 
-    private JLabel infoPanel;
     private JLabel catCornerLabel;
     private JLabel instructions;
+
     private JLabel backgroundPanelN;
     private JLabel backgroundPanelS;
     private JLabel backgroundPanelE;
@@ -32,9 +32,6 @@ public class CatCorner extends JFrame
     private CatBoard board;
 
     private byte level;
-
-    //private static Container container;
-
     private byte wildCats;
     private boolean gameOver;
     private int score;
@@ -43,6 +40,8 @@ public class CatCorner extends JFrame
     public CatCorner()
     {
         frame = new JFrame("Cat Corner");
+        rightPanel = new RightPanel();
+
 
         initializeLabels();
         northPanel = new JPanel(new BorderLayout(3,3));
@@ -50,13 +49,14 @@ public class CatCorner extends JFrame
         mainPanel  = new JPanel(new BorderLayout(3,3));
         gameWindow = new JPanel();
 
+
         northPanel.setBackground(Color.BLACK);
         southPanel.setBackground(Color.BLACK);
         mainPanel.setBackground(Color.BLACK);
         gameWindow.setBackground(Color.BLACK);
 
         northPanel.add(gameWindow, BorderLayout.CENTER);
-        northPanel.add(infoPanel, BorderLayout.EAST);
+        northPanel.add(rightPanel.getPanel(), BorderLayout.EAST);
 
         southPanel.add(catCornerLabel, BorderLayout.NORTH);
         southPanel.add(instructions, BorderLayout.SOUTH);
@@ -91,8 +91,9 @@ public class CatCorner extends JFrame
 
     }
 
-    void playGame()
+    public void playGame()
     {
+
         playLevel();
 
 
@@ -106,7 +107,7 @@ public class CatCorner extends JFrame
         //displayFinalScreen(score, level)
     }
 
-    void setBoard(JPanel currentBoard)
+    public void setBoard(JPanel currentBoard, int score)
     {
 
         northPanel.remove(gameWindow);
@@ -120,15 +121,17 @@ public class CatCorner extends JFrame
         frame.setVisible(true);
     }
 
-    void playLevel()
+    private void playLevel()
     {
         setGameWindow(level);
+        rightPanel.setLevel(level);
+
         gameWindow.setSize(new Dimension(490, 490));
         gameWindow.add(board.getCurrentBoard());
         frame.add(mainPanel, BorderLayout.CENTER);
 
     }
-    void nextLevel()
+    public void nextLevel(int score)
     {
         level++;
         if(level == 4 || level == 5 || level == 6 || level == 7)
@@ -138,7 +141,7 @@ public class CatCorner extends JFrame
 
         board = new CatBoard(level, wildCats, this, score);
         northPanel.remove(gameWindow);
-
+        rightPanel.setLevel(level);
         System.out.println("se apeleaza");
         gameWindow = new JPanel();
         gameWindow = board.getCurrentBoard();
@@ -146,18 +149,19 @@ public class CatCorner extends JFrame
         mainPanel.add(northPanel, BorderLayout.NORTH);
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.setVisible(true);
+
     }
 
-    void initializeLabels() {
+    private void initializeLabels() {
 
         BufferedImage image;
         String path = "C:/Linux/proiecte_java/CatCorner/src/panels/";
-        try {
+        /*try {
             image = ImageIO.read(new File(path + "infoPanel.png"));
             infoPanel = new JLabel(new ImageIcon(image));
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         try {
             image = ImageIO.read(new File(path + "catCornerLabel.png"));
             catCornerLabel = new JLabel(new ImageIcon(image));
@@ -196,8 +200,22 @@ public class CatCorner extends JFrame
         }
     }
 
-    void setGameWindow(int size)
+
+    public void setScore(int score)
+    {
+        rightPanel.setScore(score);
+    }
+
+
+
+    private void setGameWindow(int size)
     {
         gameWindow.setLayout(new GridLayout(size, 0, 0, 0));
     }
+
+    public static JFrame getFrame()
+    {
+        return frame;
+    }
+
 }

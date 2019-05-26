@@ -1,3 +1,6 @@
+import javax.swing.*;
+import java.awt.*;
+
 public class CatCoordinates
 {
 
@@ -28,7 +31,6 @@ public class CatCoordinates
     {
         System.out.println("X: " + X + "\t" + "Y: " + Y);
     }
-
 
     public static int getButtonIndex(int x, int y, int levelSize)
     {
