@@ -4,7 +4,7 @@ Cat Corner is a playful, strategy-driven game that invites players to a challeng
 
 ## Demo Animation
 
-![Cat Corner Animation](https://github.com/danielw98/CatCorner2/blob/main/CatCorner.gif?raw=true)
+![Cat Corner Animation](https://github.com/danielw98/CatCorner2/blob/master/CatCorner.gif?raw=true)
 
 ## Features
 
